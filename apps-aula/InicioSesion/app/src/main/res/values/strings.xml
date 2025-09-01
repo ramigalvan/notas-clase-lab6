@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">InicioSesion</string>
+    <string name="txt_welcome">Welcome</string>
+    <string name="txt_email">Email</string>
+    <string name="txt_password">Password</string>
+    <string name="txt_remember_me">Remember me</string>
+    <string name="txt_forgot_password">Forgot Password?</string>
+    <string name="btn_login">Log in</string>
+    <string name="txt_signup">Sign Up</string>
+    <string name="txt_full_name">Full Name</string>
+    <string name="txt_student_id">Student Id</string>
+    <string name="btn_signup">Sign Up</string>
+</resources>
