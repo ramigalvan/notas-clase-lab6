@@ -2,11 +2,8 @@ package com.example.firstapp;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -14,6 +11,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,12 +23,19 @@ public class MainActivity extends AppCompatActivity  {
     * Crea una `Activity` principal con un `ListView` (o `RecyclerView`, si te sientes más avanzado).
     * Usa un `ArrayAdapter` para mostrar una lista de cadenas (`String`), por ejemplo, nombres de frutas.
     * **Esto te enseña a manejar colecciones de datos en una UI.**
+    * TODO: aprender recyclerView
+    * Funciones:
+    * TODO: permite leer los datos y mostrarlos en UI mediante un adapter
+    * TODO: permite crear un dato y anidarlo a la lista
+    * TODO: permite seleccionar un item y mandar los datos de ese item a otroa pantalla
+    * TODO: permite seleccionar un item y modificarlo
+    * TODO: permite seleccionar un item y eliminarlo (confirmar con un modal)
     */
 
     private final static String LOGCAT_TAG = "Logcat debugg";
 
     private List<String> frutas;
-    private ArrayAdapter<String> adapter;
+    private FrutaAdapter adapter;
     private EditText frutaEditText;
 
     @Override
@@ -50,9 +56,14 @@ public class MainActivity extends AppCompatActivity  {
         frutas.add("Pera");
         frutas.add("Banana");
 
-        ListView frutasListView = findViewById(R.id.lista_frutas);
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, frutas);
-        frutasListView.setAdapter(adapter);
+        RecyclerView frutasRecyclerView = findViewById(R.id.lista_frutas);
+
+        //configura el layout manager
+        frutasRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        //instancia tu adaptor personalizado
+        adapter = new FrutaAdapter(frutas);
+        frutasRecyclerView.setAdapter(adapter);
 
         frutaEditText = findViewById(R.id.edit_text_fruta);
         Button btnAgregarFruta = findViewById(R.id.btn_agregar);
@@ -65,17 +76,13 @@ public class MainActivity extends AppCompatActivity  {
                 Toast.makeText(MainActivity.this, "Pone una fruta loco", Toast.LENGTH_SHORT).show();
             }else{
                 frutas.add(frutaInput);
-                adapter.notifyDataSetChanged();
+                adapter.notifyItemInserted(frutas.size() - 1);
+
                 Toast.makeText(MainActivity.this, "Fruta agregada!", Toast.LENGTH_SHORT).show();
-
                 Log.d("Fruta", "Loggeando fruta" + frutas.toString());
-
                 frutaEditText.setText("");
             }
         });
-
-
-
     }
 
     @Override
