@@ -1,25 +1,25 @@
 package com.example.firstapp.ui;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.firstapp.R;
-import com.example.firstapp.data.UsuarioDAO;
+import com.example.firstapp.model.User;
+import com.example.firstapp.ui.components.UserListAdapter;
+import com.example.firstapp.viewModel.UserViewModel;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class MainActivity extends AppCompatActivity  {
 
-    private EditText etNombre, etEmail;
-    private Button btnGuardar, btnVerLista;
-    private UsuarioDAO usuarioDAO;
+    private UserViewModel userViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,24 +32,35 @@ public class MainActivity extends AppCompatActivity  {
             return insets;
         });
 
-        etNombre = findViewById(R.id.etNombre);
-        etEmail = findViewById(R.id.etEmail);
-        btnGuardar = findViewById(R.id.btnGuardar);
-        btnVerLista = findViewById(R.id.btnVerLista);
+        RecyclerView recyclerView = findViewById(R.id.recyclerview);
+        final UserListAdapter adapter = new UserListAdapter();
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        usuarioDAO = new UsuarioDAO(this);
+        userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
 
-        btnGuardar.setOnClickListener(v -> {
-            String nombre =  etNombre.getText().toString();
-            String email =  etEmail.getText().toString();
-            usuarioDAO.insertarUsuario(nombre, email);
-            Toast.makeText(this, "Usuario guardado", Toast.LENGTH_SHORT).show();
+        //observa la lista de usuarios
+        userViewModel.getAllUsers().observe(this, adapter::setUsers);
+
+        //boton flotante
+        FloatingActionButton fab = findViewById(R.id.fab);
+        fab.setOnClickListener(view -> {
+            User newUser = new User("Juan", "perez");
+            userViewModel.insert(newUser);
         });
 
-        btnVerLista.setOnClickListener(v -> {
-            Intent intent = new Intent(this, ListaActivity.class);
-            startActivity(intent);
-        });
+//
+//        btnGuardar.setOnClickListener(v -> {
+//            String nombre =  etNombre.getText().toString();
+//            String email =  etEmail.getText().toString();
+//            usuarioDAO.insertarUsuario(nombre, email);
+//            Toast.makeText(this, "Usuario guardado", Toast.LENGTH_SHORT).show();
+//        });
+//
+//        btnVerLista.setOnClickListener(v -> {
+//            Intent intent = new Intent(this, ListaActivity.class);
+//            startActivity(intent);
+//        });
     }
 
 }
